@@ -15,14 +15,14 @@ export class App extends Component {
   };
 
   handlerInputName = e => {
-    console.log('state.name', e.currentTarget.value);
+    // console.log('state.name', e.currentTarget.value);
     this.setState({
       name: e.currentTarget.value,
     });
   };
 
   handlerInputNumber = e => {
-    console.log('number', e.currentTarget.value);
+    // console.log('number', e.currentTarget.value);
 
     this.setState({
       number: e.currentTarget.value,
@@ -31,6 +31,12 @@ export class App extends Component {
 
   handlerFormSubmit = e => {
     e.preventDefault();
+    if (
+      this.state.contacts.filter(contact => contact.name === this.state.name)
+        .length !== 0
+    ) {
+      return alert(this.state.name + ' is already in contacts.');
+    }
 
     this.setState({
       contacts: [

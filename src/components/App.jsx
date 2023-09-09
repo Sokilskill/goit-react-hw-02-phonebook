@@ -53,6 +53,18 @@ export class App extends Component {
     this.setState({ filter: value });
   };
 
+  handlerButtonDelete = id => {
+    this.setState(
+      prevState => ({
+        contacts: prevState.contacts.filter(contact => contact.id !== id),
+      }),
+
+      () => {
+        console.log('State has been updated:', this.state.contacts);
+      }
+    );
+  };
+
   render() {
     return (
       <div>
@@ -110,6 +122,12 @@ export class App extends Component {
                   <p>
                     {contact.name}: {contact.number}
                   </p>
+                  <button
+                    type="button"
+                    onClick={() => this.handlerButtonDelete(contact.id)}
+                  >
+                    Delete
+                  </button>
                 </li>
               );
             })}

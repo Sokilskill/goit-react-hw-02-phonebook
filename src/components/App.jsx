@@ -45,7 +45,6 @@ export class App extends Component {
   handlerInputFilter = e => {
     const { value } = e.target;
     this.setState({ filter: value });
-    status;
   };
 
   render() {

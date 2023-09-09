@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
+import Filter from './Filter/Filter';
 
 export class App extends Component {
   state = {
@@ -99,15 +100,8 @@ export class App extends Component {
           <button type="submit">Add contact</button>
         </form>
         <h2>Contacts</h2>
-        <label>
-          Find contacts by name
-          <input
-            type="text"
-            // value={this.state.filter}
-            name="filter"
-            onChange={this.handlerInputFilter}
-          />
-        </label>
+
+        <Filter onChange={this.handlerInputFilter} />
 
         <ul>
           {this.state.contacts

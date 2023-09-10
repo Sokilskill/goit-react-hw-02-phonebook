@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
 import Filter from './Filter/Filter';
+import ContactList from './ContactList/ContactList';
+import ContactForm from './ContactForm/ContactForm';
 
 export class App extends Component {
   state = {
@@ -10,43 +12,25 @@ export class App extends Component {
       { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
       { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
     ],
-    name: '',
-    number: '',
     filter: '',
   };
 
-  handlerInputName = e => {
-    // console.log('state.name', e.currentTarget.value);
-    this.setState({
-      name: e.currentTarget.value,
-    });
-  };
-
-  handlerInputNumber = e => {
-    // console.log('number', e.currentTarget.value);
-
-    this.setState({
-      number: e.currentTarget.value,
-    });
-  };
-
-  handlerFormSubmit = e => {
-    e.preventDefault();
+  addNewContacts = (name, number) => {
+    const showAlert = true;
+    const similarElement = element => element.name === name;
     if (
-      this.state.contacts.filter(contact => contact.name === this.state.name)
-        .length !== 0
+      // this.state.contacts.filter(contact => contact.name === name).length !== 0 // мій метод пошуку подібного ім'я через фільтер
+      // this.state.contacts.some(contact => contact.name === name) // знайшов some, який перебирає масив і повертає true або false, не мутує вихідний масив
+
+      this.state.contacts.some(similarElement)
     ) {
-      return alert(this.state.name + ' is already in contacts.');
+      alert(name + ' is already in contacts.');
+      return showAlert;
     }
 
-    this.setState({
-      contacts: [
-        { id: nanoid(), name: this.state.name, number: this.state.number },
-        ...this.state.contacts,
-      ],
-    });
-
-    e.currentTarget.reset();
+    this.setState(prevState => ({
+      contacts: [{ id: nanoid(), name, number }, ...prevState.contacts],
+    }));
   };
 
   handlerInputFilter = e => {
@@ -55,14 +39,17 @@ export class App extends Component {
   };
 
   handlerButtonDelete = id => {
-    this.setState(
-      prevState => ({
-        contacts: prevState.contacts.filter(contact => contact.id !== id),
-      }),
+    this.setState(prevState => ({
+      contacts: prevState.contacts.filter(contact => contact.id !== id),
+    }));
+  };
 
-      () => {
-        console.log('State has been updated:', this.state.contacts);
-      }
+  filterContacts = () => {
+    const { contacts, filter } = this.state;
+    const lowerCaseFilter = filter.toLowerCase();
+
+    return contacts.filter(contact =>
+      contact.name.toLowerCase().includes(lowerCaseFilter)
     );
   };
 
@@ -70,62 +57,16 @@ export class App extends Component {
     return (
       <div>
         <h2>Phonebook</h2>
-
-        <form onSubmit={this.handlerFormSubmit}>
-          <label>
-            Name
-            <input
-              onChange={this.handlerInputName}
-              type="text"
-              name="name"
-              // pattern="^[a-zA-Zа-яА-Я]+(([' \-][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
-              pattern="^[a-zA-Zа-яА-ЯєіїЄІЇ]+(([' \-][a-zA-Zа-яА-ЯєіїЄІЇ ])?[a-zA-Zа-яА-ЯєіїЄІЇ]*)*$"
-              title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
-              required
-            />
-          </label>
-          <label>
-            Number
-            <input
-              onChange={this.handlerInputNumber}
-              type="tel"
-              name="number"
-              // pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
-              pattern="\+?\d{1,4}?[ .\-\s]?\(?\d{1,3}?\)?[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,4}[ .\-\s]?\d{1,9}"
-              title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
-              required
-            />
-          </label>
-
-          <button type="submit">Add contact</button>
-        </form>
+        <ContactForm addNewContacts={this.addNewContacts} />
         <h2>Contacts</h2>
-
-        <Filter onChange={this.handlerInputFilter} />
-
-        <ul>
-          {this.state.contacts
-            .filter(contact =>
-              contact.name
-                .toLowerCase()
-                .includes(this.state.filter.toLowerCase())
-            )
-            .map(contact => {
-              return (
-                <li key={contact.id}>
-                  <p>
-                    {contact.name}: {contact.number}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => this.handlerButtonDelete(contact.id)}
-                  >
-                    Delete
-                  </button>
-                </li>
-              );
-            })}
-        </ul>
+        <Filter
+          onChange={this.handlerInputFilter}
+          filterValue={this.state.filter}
+        />
+        <ContactList
+          contacts={this.filterContacts()}
+          onButtonDelete={this.handlerButtonDelete}
+        />
       </div>
     );
   }

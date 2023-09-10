@@ -3,6 +3,7 @@ import { nanoid } from 'nanoid';
 import Filter from './Filter/Filter';
 import ContactList from './ContactList/ContactList';
 import ContactForm from './ContactForm/ContactForm';
+import MainTitle from './MainTitle/MainTitle';
 
 export class App extends Component {
   state = {
@@ -55,10 +56,10 @@ export class App extends Component {
 
   render() {
     return (
-      <div>
-        <h2>Phonebook</h2>
+      <div className="container">
+        <MainTitle title="Phonebook" />
         <ContactForm addNewContacts={this.addNewContacts} />
-        <h2>Contacts</h2>
+        <MainTitle title="Contacts" />
         <Filter
           onChange={this.handlerInputFilter}
           filterValue={this.state.filter}

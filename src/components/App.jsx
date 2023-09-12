@@ -55,6 +55,7 @@ export class App extends Component {
   };
 
   render() {
+    const filterContacts = this.filterContacts();
     return (
       <div className="container">
         <MainTitle title="Phonebook" />
@@ -65,7 +66,7 @@ export class App extends Component {
           filterValue={this.state.filter}
         />
         <ContactList
-          contacts={this.filterContacts()}
+          contacts={filterContacts}
           onButtonDelete={this.handlerButtonDelete}
         />
       </div>
